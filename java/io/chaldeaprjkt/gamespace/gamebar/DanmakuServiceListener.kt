@@ -45,7 +45,7 @@ class DanmakuServiceListener : NotificationListenerService() {
 
     override fun onNotificationPosted(sbn: StatusBarNotification) {
         val notificationMode = danmakuServiceInterface?.danmakuNotificationMode ?: return
-        if (!notificationMode || !sbn.isClearable || sbn.isOngoing || sbn.getIsContentSecure()) return
+        if (!notificationMode || !sbn.isClearable || sbn.isOngoing || sbn.notification.visibility == Notification.VISIBILITY_SECRET) return
 
         val danmakuText = extractDanmakuText(sbn)
 
