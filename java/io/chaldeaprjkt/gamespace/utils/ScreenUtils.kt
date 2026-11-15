@@ -126,6 +126,10 @@ class ScreenUtils @Inject constructor(private val context: Context) {
     }
 
     fun bypassCharge(enable: Boolean) {
+        // Miku-Picked UI: no-op unless the charger truly supports passthrough. The Galaxy S21
+        // can only disable charging, which drains the battery while plugged in, so never touch
+        // the charging props there.
+        if (!SystemProperties.getBoolean("persist.sys.battery_bypass_supported", false)) return
         val bypassEnabledByUser = Settings.System.getIntForUser(
             context.contentResolver, "smart_charge_by_user", 0,
             UserHandle.USER_CURRENT

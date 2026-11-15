@@ -39,11 +39,14 @@ class SettingsFragment : Hilt_SettingsFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val isGoogleDevice = Build.MANUFACTURER.equals("Google", ignoreCase = true)
+        // Miku-Picked UI: hide the charge-bypass toggle unless the charger truly supports
+        // passthrough. Don't trust Build.MANUFACTURER here: the Play Integrity spoof makes every
+        // app see "Google", which used to show this toggle on the Galaxy S21, where bypass only
+        // disables charging (the phone then drains while plugged in).
         val bypassSupported = SystemProperties.getBoolean("persist.sys.battery_bypass_supported", false)
         val bypassChargePref = findPreference<Preference>("bypass_charge_enabled")
 
-        if (!isGoogleDevice && !bypassSupported && bypassChargePref != null) {
+        if (!bypassSupported && bypassChargePref != null) {
             val category = findPreference<Preference>("in_game_preferences") as? PreferenceCategory
             category?.removePreference(bypassChargePref)
         }
